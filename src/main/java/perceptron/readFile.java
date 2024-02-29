@@ -3,11 +3,63 @@ package main.java.perceptron;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
+
 
 public class readFile {
     public static void main(String[] args)
     {
-        String filePath = "../sample_data.txt";
+        Scanner userIn = new Scanner(System.in);
+
+        System.out.println("Welcome to my first neural network - A Perceptron Net!")
+        System.out.println("Enter 1 to train using a training data file, enter 2 to use a trained weight settings data file: ")
+
+        int trainingSelection = Integer.valueOf(userIn.nextLine());
+        
+        invalidSelection = true;
+        while (invalidSelection){
+            if (trainingSelection == 1){
+                invalidSelection = false;
+
+                System.out.println("Enter the training data file path: ");
+                String filePath = userIn.nextLine(); //TODO: error check for invalid filename
+
+                System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
+                int weightSelection = Integer.valueOf(userIn.nextLine());
+                if (weightSelection == 0){
+                    
+                }
+                else { //TODO: error check for invalid selection
+
+                }
+
+                System.out.println("Enter the max number of training Epochs: ");
+                int maxEpoch = Integer.valueOf(userIn.nextLine());
+
+                System.out.println("Enter a file name to save the trained weight settings: ");
+                String resultsFilename = userIn.nextLine();
+
+                System.out.println("Enter the learning rate alpha from 0 to 1 but not including 0: ");
+                int alpha = Integer.valueOf(userIn.nextLine());
+
+                System.out.println("Enter the threshold theta: ");
+                int theta = Integer.valueOf(userIn.nextLine());
+
+                System.out.println("Enter the threshold to be used for measuring weight changes: ");
+                int weightThreshold = Integer.valueOf(userIn.nextLine());
+            }
+            else if (trainingSelection == 2){
+                invalidSelection = false;
+
+                System.out.println("Enter the name of the trained weight settings data file: ");
+                //make perceptron here
+            }
+            else{
+                System.out.println("Invalid selection! Please choose 1 or 2: ");
+                trainingSelection = Integer.valueOf(userIn.nextLine());
+            }
+        }
 
         try {
             // Create a FileReader object to read the file
