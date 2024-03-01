@@ -17,18 +17,21 @@ public class readFile {
 
         int trainingSelection = Integer.valueOf(userIn.nextLine());
         
-        invalidSelection = true;
+        boolean invalidSelection = true;
+        String filePath;
         while (invalidSelection){
             if (trainingSelection == 1){
                 invalidSelection = false;
 
                 System.out.println("Enter the training data file path: ");
-                String filePath = userIn.nextLine(); //TODO: error check for invalid filename
+                filePath = userIn.nextLine(); //TODO: error check for invalid filename
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
+                float [][] weights;
+                float [] bweights;
                 if (weightSelection == 0){
-                    
+
                 }
                 else { //TODO: error check for invalid selection
 
@@ -48,11 +51,14 @@ public class readFile {
 
                 System.out.println("Enter the threshold to be used for measuring weight changes: ");
                 int weightThreshold = Integer.valueOf(userIn.nextLine());
+
+                perceptron p = new perceptron(weights, bweights, alpha, theta, null, null, maxEpoch);
             }
             else if (trainingSelection == 2){
                 invalidSelection = false;
 
                 System.out.println("Enter the name of the trained weight settings data file: ");
+                filePath = userIn.nextLine(); //TODO: error check for invalid filename
                 //make perceptron here
             }
             else{
@@ -90,7 +96,7 @@ public class readFile {
                 // Process each line here
                 if (line.length() == 0)
                 {
-                    count += 1
+                    count += 1;
                 }
                 String[] vals = line.split(" ");
                 
