@@ -1,4 +1,3 @@
-package main.java.perceptron;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -88,6 +87,7 @@ public class readFile {
                 read_file(filePath);
                 //make perceptron here using default constructor
             }
+
             else{
                 System.out.println("Invalid selection! Please choose 1 or 2: ");
                 trainingSelection = Integer.valueOf(userIn.nextLine());
@@ -115,7 +115,7 @@ public class readFile {
             int dimCount = 0; //needed for count of what dim we are on. 
 
             int matrixRowCount = 0; //needed to know what row to populate
-
+            int tCount = 0;
             
             //to return input values
             returnVals[0] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
@@ -124,10 +124,11 @@ public class readFile {
             //to return training pairs
             returnVals[2] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
 
-            int[][] inputVals = new int[returnVals[2]][];
+            int[][] inputVals = new int[returnVals[2]][100];
             String[][] indivSample = new String[100][100];
             int[] tVals;
 
+            String[] letters = new String[returnVals[2]];
             int sampleCount = 0;
             // Read each line of the file until reaching the end
             while ((line = bufferedReader.readLine()) != null) {
@@ -139,14 +140,25 @@ public class readFile {
                 }
                 else if (count == 2) //we know we are gonna read the tval
                 {
-                    dimCount = 0;
-                    convertTo1D(indivSample);
-                    sampleCount ++;
-                    //tval logic
-                    count = 0;
+                    if (tCount == 0) //TVals
+                    {   
+                        dimCount = 0;
+                        inputVals[sampleCount] = convertTo1D(indivSample);
+
+                        sampleCount ++;
+                        //tval logic
+                        
+                        count = 0;
+                    }
+                    else
+                    {
+                        letters[sampleCount-1] = line.split(" ")[0];
+                    }
+                    tCount ++;
                 }
                 else if (count == 1) //sample stuff
                 {
+                    tCount = 0;
                     indivSample[dimCount] = line.strip().split(" ");
                     dimCount += 1;
                 }
