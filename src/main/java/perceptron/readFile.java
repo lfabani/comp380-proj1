@@ -3,7 +3,7 @@ package main.java.perceptron;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.*;
+import java.util.*;
 import java.util.Scanner;
 
 
@@ -25,19 +25,42 @@ public class readFile {
 
                 System.out.println("Enter the training data file path: ");
                 filePath = userIn.nextLine(); //TODO: error check for invalid filename
-                read_file(filePath);
+                int[] dimensions = read_file(filePath);
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
-                float [][] weights;
-                float [] bweights;
+                float [][] weights = new float[dimensions[0]][dimensions[1]];
+                float [] bweights = new float [dimensions[1]];
                 if (weightSelection == 0){
-                    //TODO: this needs to initialize all weights to 0, but I don't know where your storing the dimensions of the input data
-                    //TODO: set bias to 0 
+                    //initials weights
+                    for (int i = 0; i < dimensions[0]; i++)
+                    {
+                        for (int j = 0; j < dimensions[1]; j++)
+                        {
+                            weights[i][j] = 0;
+                        }
+                    }
+                    //initialize bias weights
+                    for (int i = 0; i < dimensions[1]; i++)
+                        {
+                            bweights[i] = 0;
+                        }
                 }
                 else { //TODO: error check for invalid selection
-                    //TODO: this needs to create random weights, but again, I don't know what value to use for the for loop
-                    //TODO: set bias to random weight
+                    //initials weights
+                    Random random = new Random();
+                    for (int i = 0; i < dimensions[0]; i++)
+                    {
+                        for (int j = 0; j < dimensions[1]; j++)
+                        {
+                            weights[i][j] = (random.nextFloat()-0.5f);
+                        }
+                    }
+                    //initialize bias weights
+                    for (int i = 0; i < dimensions[1]; i++)
+                        {
+                            bweights[i] = (random.nextFloat()-0.5f);
+                        }
                 }
 
                 System.out.println("Enter the max number of training Epochs: ");
@@ -76,7 +99,8 @@ public class readFile {
         
     }
 
-    public static void read_file(String filePath){
+    public static int[] read_file(String filePath){
+        int[] returnVals = new int[3];
         try {
             // Create a FileReader object to read the file
             FileReader fileReader = new FileReader(filePath);
@@ -93,57 +117,38 @@ public class readFile {
             int matrixRowCount = 0; //needed to know what row to populate
 
             
-            int numInputPatterns;
-            int numOutputPatterns;
-            int numTrainingSets;
+            //to return input values
+            returnVals[0] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
+            //to return output values
+            returnVals[1] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
+            //to return training pairs
+            returnVals[2] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
 
-            int[][] inputVals;
-
+            int[][] inputVals = new int[returnVals[2]][];
+            String[][] indivSample = new String[100][100];
             int[] tVals;
+
+            int sampleCount = 0;
             // Read each line of the file until reaching the end
             while ((line = bufferedReader.readLine()) != null) {
+                
                 // Process each line here
                 if (line.length() == 0)
                 {
-                    count += 1;
+                    count++;
                 }
-                String[] vals = line.split(" ");
-                
-                if (count == 0)
+                else if (count == 2) //we know we are gonna read the tval
                 {
-                    //get the dimensions
-                    if (dimCount == 0)
-                    {
-                        dimCount += 1;
-                        numInputPatterns = Integer.parseInt(vals[0]);
-                    }
-                    else if (dimCount == 1)
-                    {
-                        dimCount += 1;
-                        numOutputPatterns = Integer.parseInt(vals[0]);
-                    }
-                    else
-                    {
-                        numTrainingSets = Integer.parseInt(vals[0]);
-                    }
-
+                    dimCount = 0;
+                    convertTo1D(indivSample);
+                    sampleCount ++;
+                    //tval logic
+                    count = 0;
                 }
-                else if (count == 1) //we are reading in matrix now
+                else if (count == 1) //sample stuff
                 {
-                    
-                    for (int i = 0; i < vals.length; i++) 
-                    {
-                        inputVals[matrixRowCount][i] = Integer.parseInt(vals[i]);
-                    }
-                    matrixRowCount ++;
-
-                }
-                else if (count == 2) //we are getting tvals
-                {
-                    for (int i = 0; i < vals.length; i++) 
-                    {
-                        tVals[i] = Integer.parseInt(vals[i]);
-                    }
+                    indivSample[dimCount] = line.strip().split(" ");
+                    dimCount += 1;
                 }
 
             }
@@ -151,9 +156,32 @@ public class readFile {
             // Close the BufferedReader and FileReader to release resources
             bufferedReader.close();
             fileReader.close();
+  
         } catch (IOException e) {
             // Handle any IO exceptions that may occur
             e.printStackTrace();
         }
+
+        return returnVals;
+    }
+
+    public static int[] convertTo1D(String[][] array2D)
+    {
+        int rows = array2D.length;
+        int cols = array2D.length;
+
+        int totalElements = rows * cols;
+
+        int[] resultArray = new int[totalElements];
+
+        int index = 0;
+        for (String[] row : array2D)
+        {
+            for (String numStr : row)
+            {
+                resultArray[index++] = Integer.parseInt(numStr);
+            }
+        }
+        return resultArray;
     }
 }

@@ -6,10 +6,10 @@ class perceptron{
     private float alpha;
     private float theta; 
     private int[][] sample;
-    private int[] t;
+    private int[][] t;
     private int epoch;
     private int maxEpoch;
-    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[] T, int MaxEpoch)
+    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch)
     {  
         this.weights = Weights;
         this.bWeight = BWeights;
@@ -38,7 +38,7 @@ class perceptron{
         this.bWeight[t] += this.alpha*t;
     }
 
-    public float compute()
+    public float compute(int sampleNum)
     {
         float yIn;
         boolean NotConverged = true;
@@ -46,9 +46,9 @@ class perceptron{
         while(NotConverged == true && this.epoch <= this.maxEpoch)
         {
            
-            for (int tVal : t)
+            for (int tVal : t[sampleNum])
             {
-                for (int[] sample : this.sample)
+                int[] sample = this.sample[sampleNum];
                 {
                     yIn = this.bWeight[tVal];
                     for (int i = 0; i < sample.length; i++)
