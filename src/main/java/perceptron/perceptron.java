@@ -73,11 +73,11 @@ class perceptron{
             }
             this.epoch += 1;
         }
-        
+        return 0f;
     }
     public float train()
     {
-
+        return 0f;
     }
 
     private int activationFunction(float yIn)
