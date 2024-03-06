@@ -18,6 +18,7 @@ class perceptron{
     private int epoch;
     private int maxEpoch;
     private float weightThreshold;
+    
     public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, float WeightThreshold)
     {  
         this.weights = Weights;
@@ -29,6 +30,7 @@ class perceptron{
         this.epoch = 0; 
         this.maxEpoch = MaxEpoch;
         this.weightThreshold = WeightThreshold;
+        
     }
 
     private void updateWeights(int t,int[] sample, int sampleCounter)
@@ -137,9 +139,31 @@ class perceptron{
         }
     }
 
-    public void run()
+    public int[][] run()
     {
-       
+        int[][] results = new int[this.sample.length][this.t[0].length];
+        int sampleCount = 0;
+       for (int[] sample : this.sample)
+       {
+
+            //iterate through each sample
+            //each sample has a combo of y's (each output neuron!)
+            for (int outputNeuron = 0; outputNeuron < this.t[0].length; outputNeuron++)
+            {
+                float yIn = 0f;
+            //each output neuron has a set of wieghts and inputs
+                for (int i = 0; i < sample.length; i++)
+                    {
+                        yIn += sample[i]*this.weights[outputNeuron][i];
+                    }
+                //now run activation func to get the y
+                int y = activationFunction(yIn);
+                results[sampleCount][outputNeuron] = y;
+                
+            }
+            sampleCount ++; 
+       }
+       return results;
     }
 
     private int activationFunction(float yIn)
