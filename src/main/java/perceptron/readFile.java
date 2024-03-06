@@ -18,8 +18,8 @@ public class readFile {
         
         boolean invalidSelection = true;
         String filePath;
-        int[][] samples = new int[0][0];
-        int[][] t = new int[0][0];
+        int[][] samples = new int[21][63]; //TODO: change hard coded values
+        int[][] t = new int[21][7]; //TODO: change hard coded values
         while (invalidSelection){
             if (trainingSelection == 1){
                 invalidSelection = false;
@@ -30,13 +30,13 @@ public class readFile {
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
-                float [][] weights = new float[dimensions[0]][dimensions[1]];
+                float [][] weights = new float[dimensions[1]][dimensions[0]];
                 float [] bweights = new float [dimensions[1]];
                 if (weightSelection == 0){
                     //initials weights
-                    for (int i = 0; i < dimensions[0]; i++)
+                    for (int i = 0; i < dimensions[1]; i++)
                     {
-                        for (int j = 0; j < dimensions[1]; j++)
+                        for (int j = 0; j < dimensions[0]; j++)
                         {
                             weights[i][j] = 0;
                         }
@@ -71,20 +71,20 @@ public class readFile {
                 String resultsFilename = userIn.nextLine();
 
                 System.out.println("Enter the learning rate alpha from 0 to 1 but not including 0: ");
-                int alpha = Integer.valueOf(userIn.nextLine());
+                float alpha = userIn.nextFloat();
 
                 System.out.println("Enter the threshold theta: ");
-                int theta = Integer.valueOf(userIn.nextLine());
+                float theta = userIn.nextFloat();
 
                 System.out.println("Enter the threshold to be used for measuring weight changes: ");
-                int weightThreshold = Integer.valueOf(userIn.nextLine());
+                float weightThreshold = userIn.nextFloat();
 
-                perceptron p = new perceptron(weights, bweights, alpha, theta, samples, t, maxEpoch, resultsFilename, weightThreshold);
+                perceptron p = new perceptron(weights, bweights, alpha, theta, samples, t, maxEpoch, weightThreshold);
                 
-                for (int i = 0; i < samples.length; i++)
-                {
-                    p.train(i);
-                }
+                p.train();
+                p.create_results_file(resultsFilename);
+                System.out.println("trained");
+    
                 
             }
             else if (trainingSelection == 2){
@@ -123,26 +123,23 @@ public class readFile {
             // Variable to store each line read from the file
             String line;
             int count = 0; //keep track of how many spaces we are at!
-
             int dimCount = 0; //needed for count of what dim we are on. 
-
-            int matrixRowCount = 0; //needed to know what row to populate
             int tCount = 0;
             
             //to return input values
-            returnVals[0] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
+            returnVals[0] = Integer.parseInt(bufferedReader.readLine().strip());
             //to return output values
-            returnVals[1] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
+            returnVals[1] = Integer.parseInt(bufferedReader.readLine().strip());
             //to return training pairs
-            returnVals[2] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
+            returnVals[2] = Integer.parseInt(bufferedReader.readLine().strip());
 
-            inputVals = new int[returnVals[2]][100];
-            String[][] indivSample = new String[100][100];
+            String[][] indivSample = new String[9][7];  //TODO: change hard coded values
 
             String[] letters = new String[returnVals[2]];
             int sampleCount = 0;
             // Read each line of the file until reaching the end
-            while ((line = bufferedReader.readLine()) != null) {
+            line = bufferedReader.readLine();
+            while (line != null) {
                 
                 // Process each line here
                 if (line.length() == 0)
@@ -156,9 +153,10 @@ public class readFile {
                         dimCount = 0;
                         inputVals[sampleCount] = convertTo1D(indivSample);
 
-                        sampleCount ++;
                         //tval logic
-                        
+                        tVals[sampleCount] = convertStringListInt(line.split(" "));
+                        sampleCount ++;
+
                         count = 0;
                     }
                     else
@@ -170,10 +168,19 @@ public class readFile {
                 else if (count == 1) //sample stuff
                 {
                     tCount = 0;
-                    indivSample[dimCount] = line.strip().split(" ");
+                    String tempArray[] = line.strip().split(" ");
+                    int i = 0;
+                    for (String num : tempArray)
+                    {
+                        if (!num.equals(""))
+                        {
+                        indivSample[dimCount][i] = num;
+                        i++;
+                        }
+                    }
                     dimCount += 1;
                 }
-
+                line = bufferedReader.readLine();
             }
 
             // Close the BufferedReader and FileReader to release resources
@@ -188,10 +195,25 @@ public class readFile {
         return returnVals;
     }
 
+    public static int[] convertStringListInt (String[] strList)
+    {
+        int[] intList = new int[7];  //TODO: change hard coded values
+        int i = 0;
+        for (String bruh : strList)
+        {
+            if (!bruh.equals(""))
+            {
+            intList[i] = Integer.parseInt(bruh);
+            i++;
+            }
+        }
+        return intList;
+    }
+
     public static int[] convertTo1D(String[][] array2D)
     {
         int rows = array2D.length;
-        int cols = array2D.length;
+        int cols = array2D[0].length;
 
         int totalElements = rows * cols;
 
@@ -202,7 +224,11 @@ public class readFile {
         {
             for (String numStr : row)
             {
-                resultArray[index++] = Integer.parseInt(numStr);
+                if (numStr != null && !numStr.equals(" ") && !numStr.equals(""))
+                {
+                    resultArray[index] = Integer.parseInt(numStr);
+                    index++;
+                } 
             }
         }
         return resultArray;

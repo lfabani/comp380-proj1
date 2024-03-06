@@ -3,6 +3,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
+
 import java.io.FileOutputStream;
 
 class perceptron{
@@ -14,9 +17,8 @@ class perceptron{
     private int[][] t;
     private int epoch;
     private int maxEpoch;
-    private String resultsFilename;
-    private int weightThreshold;
-    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, String ResultsFilename, int WeightThreshold)
+    private float weightThreshold;
+    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, float WeightThreshold)
     {  
         this.weights = Weights;
         this.bWeight = BWeights;
@@ -26,26 +28,25 @@ class perceptron{
         this.t = T;
         this.epoch = 0; 
         this.maxEpoch = MaxEpoch;
-        this.resultsFilename = ResultsFilename;
         this.weightThreshold = WeightThreshold;
     }
 
-    private void updateWeights(int t,int[] sample)
+    private void updateWeights(int t,int[] sample, int sampleCounter)
     {
-        
+        System.out.println("updateWeights called\n");
         for (int i = 0; i<this.weights[t].length; i++)
         {
-            this.weights[i][t] +=this.alpha*t*sample[i];
+            this.weights[t][i] +=this.alpha*this.t[sampleCounter][t]*sample[i];
         }
         
     }
-    private void updateBias(int t)
+    private void updateBias(int t, int sampleCounter)
     {
 
-        this.bWeight[t] += this.alpha*t;
+        this.bWeight[t] += this.alpha*this.t[sampleCounter][t];
     }
 
-    public void train(int sampleNum)
+    public void train()
     {
         float yIn;
         boolean NotConverged = true;
@@ -54,26 +55,26 @@ class perceptron{
         //TODO: we need to update this not converged logic to use the weight threshold
         while(NotConverged == true && this.epoch <= this.maxEpoch)
         {
-            
+            sampleCounter = 0;
             for (int[] sample : this.sample)
             {
 
-                for (int tee : this.t[sampleCounter])
+                for (int tee = 0; tee < this.t[0].length; tee++)
                 {
-                
+
                     
-                            yIn = this.bWeight[tee];
+                        yIn = this.bWeight[tee];
                         for (int i = 0; i < sample.length; i++)
                         {
-                            yIn += sample[i] * this.weights[i][tee];
+                            yIn += sample[i] * this.weights[tee][i];
 
                         }
                         float y = activationFunction(yIn);
-                    
-                        if (Math.abs(y - tee) > this.weightThreshold) //add threshold here (isnt exact match or something)
+                        System.out.println(String.valueOf(this.t[sampleCounter][tee])+ " This is the tee\n"+ String.valueOf(y) + " This is Y");
+                        if (Math.abs(y - this.t[sampleCounter][tee]) > this.weightThreshold) //add threshold here (isnt exact match or something)
                         {
-                            updateWeights(tee, sample);
-                            updateBias(tee);
+                            updateWeights(tee, sample, sampleCounter);
+                            updateBias(tee,sampleCounter);
                             tempNotConverged = true;
                         }
                 }
@@ -91,7 +92,7 @@ class perceptron{
             this.epoch += 1;
             
         }
-        
+        System.out.println(String.valueOf(this.epoch) + " epochs\n");
 
     }
 
@@ -109,10 +110,23 @@ class perceptron{
             OutputStreamWriter writer = new OutputStreamWriter(fos);
 
             // Writing weights
-            writer.write(this.weights + "\n");
+            String weightStr;
+            for (float[] wt: this.weights){
+                weightStr = "";
+                for (float w : wt){
+                    weightStr += String.valueOf(w) + " ";
+                }
+                writer.write(weightStr + "\n");
+            }
+
 
             // Writing bweights
-            writer.write(this.bWeight + "\n");
+            String bWString = "";
+            for (float wt : this.bWeight)
+            {
+                bWString += String.valueOf(wt) + " ";
+            }
+            writer.write(bWString + "\n");
 
             // Close the writer
             writer.close();
