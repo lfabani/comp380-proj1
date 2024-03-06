@@ -85,9 +85,13 @@ public class readFile {
             else if (trainingSelection == 2){
                 invalidSelection = false;
 
-                System.out.println("Enter the name of the trained weight settings data file: ");
-                filePath = userIn.nextLine(); //TODO: error check for invalid filename
+                System.out.println("Enter the name of the file to classify: ");
+                filePath = userIn.nextLine();
                 //read_file(filePath);
+
+                System.out.println("Enter the name of the trained weight settings data file: ");
+                
+                 //TODO: error check for invalid filename
                 //make perceptron here using default constructor
             }
 
