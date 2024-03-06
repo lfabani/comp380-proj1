@@ -32,7 +32,7 @@ public class readFile {
                 int[] dimensions = read_file_dimensions(filePath);
                 samples = new int[dimensions[2]][dimensions[0]];
                 t = new int[dimensions[2]][dimensions[1]];
-                read_file(filePath, samples, t);
+                read_samples_file(filePath, samples, t);
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
@@ -98,10 +98,11 @@ public class readFile {
 
                 System.out.println("Enter the name of the file to classify: ");
                 filePath = userIn.nextLine();
-                //read_file(filePath);
+                //read_samples_file(filePath, t, t);
 
                 System.out.println("Enter the name of the trained weight settings data file: ");
-                
+                read_trained_weights_file(filePath);
+
                  //TODO: error check for invalid filename
                 //make perceptron here using default constructor
             }
@@ -145,7 +146,11 @@ public class readFile {
         return returnVals;
     }
 
-    public static void read_file(String filePath, int[][] inputVals, int[][] tVals){
+    public static void read_trained_weights_file(String filePath){
+
+    }
+
+    public static void read_samples_file(String filePath, int[][] inputVals, int[][] tVals){
         int[] dimensions = new int[3];
         try {
             // Create a FileReader object to read the file
