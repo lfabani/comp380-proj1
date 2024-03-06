@@ -128,8 +128,17 @@ class perceptron{
             {
                 bWString += String.valueOf(wt) + " ";
             }
+            writer.write("\n"); //add a gap to make it easy to differentiate!
             writer.write(bWString + "\n");
+            writer.write("\n"); //add a gap to make it easy to differentiate!
 
+            //now we gotta write the theta, alpha, and weight Threshold
+
+            writer.write(String.valueOf(this.theta));
+            writer.write("\n"); //add a gap to make it easy to differentiate!
+            writer.write(String.valueOf(this.alpha));
+            writer.write("\n"); //add a gap to make it easy to differentiate!
+            writer.write(String.valueOf(this.weightThreshold));
             // Close the writer
             writer.close();
             fos.close();
@@ -137,6 +146,10 @@ class perceptron{
         } catch (IOException e) {
             System.err.println(e);
         }
+    }
+    //public boolean[] test(int[][] results)
+    {
+
     }
 
     public int[][] run()
