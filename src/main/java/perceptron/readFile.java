@@ -18,13 +18,15 @@ public class readFile {
         
         boolean invalidSelection = true;
         String filePath;
+        int[][] samples = new int[0][0];
+        int[][] t = new int[0][0];
         while (invalidSelection){
             if (trainingSelection == 1){
                 invalidSelection = false;
 
                 System.out.println("Enter the training data file path: ");
                 filePath = userIn.nextLine(); //TODO: error check for invalid filename
-                int[] dimensions = read_file(filePath);
+                int[] dimensions = read_file(filePath, samples, t);
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
@@ -77,14 +79,15 @@ public class readFile {
                 System.out.println("Enter the threshold to be used for measuring weight changes: ");
                 int weightThreshold = Integer.valueOf(userIn.nextLine());
 
-                perceptron p = new perceptron(weights, bweights, alpha, theta, null, null, maxEpoch);
+                perceptron p = new perceptron(weights, bweights, alpha, theta, samples, t, maxEpoch, resultsFilename, weightThreshold);
+                
             }
             else if (trainingSelection == 2){
                 invalidSelection = false;
 
                 System.out.println("Enter the name of the trained weight settings data file: ");
                 filePath = userIn.nextLine(); //TODO: error check for invalid filename
-                read_file(filePath);
+                //read_file(filePath);
                 //make perceptron here using default constructor
             }
 
@@ -99,7 +102,7 @@ public class readFile {
         
     }
 
-    public static int[] read_file(String filePath){
+    public static int[] read_file(String filePath, int[][] inputVals, int[][] tVals){
         int[] returnVals = new int[3];
         try {
             // Create a FileReader object to read the file
@@ -124,9 +127,8 @@ public class readFile {
             //to return training pairs
             returnVals[2] = Integer.parseInt(bufferedReader.readLine().split(" ")[0]);
 
-            int[][] inputVals = new int[returnVals[2]][100];
+            inputVals = new int[returnVals[2]][100];
             String[][] indivSample = new String[100][100];
-            int[] tVals;
 
             String[] letters = new String[returnVals[2]];
             int sampleCount = 0;
