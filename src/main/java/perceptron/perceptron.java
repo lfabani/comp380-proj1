@@ -147,9 +147,29 @@ class perceptron{
             System.err.println(e);
         }
     }
-    //public boolean[] test(int[][] results)
+    public boolean[] test(int[][] results)
     {
-
+        boolean[] accuracyTest = new boolean[results[0].length]; 
+        int resultCount = 0;
+        
+        for (int[] result : results)
+        {
+            boolean pass = true;
+            //iterate through each int in result and make sure they all match!
+            for (int i = 0; i < result.length; i++)
+            {
+                int val = result[i];
+                int compareT = this.t[resultCount][i];
+                if (val != compareT)
+                {
+                    pass = false;
+                }
+            }
+            accuracyTest[resultCount] = pass;
+            resultCount++;
+        }
+        
+        return accuracyTest;
     }
 
     public int[][] run()
