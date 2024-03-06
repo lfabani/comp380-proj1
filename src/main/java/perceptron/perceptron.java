@@ -50,39 +50,48 @@ class perceptron{
         float yIn;
         boolean NotConverged = true;
         boolean tempNotConverged = false;
+        int sampleCounter = 0;
         //TODO: we need to update this not converged logic to use the weight threshold
         while(NotConverged == true && this.epoch <= this.maxEpoch)
         {
-           
-            for (int tVal : t[sampleNum])
+            
+            for (int[] sample : this.sample)
             {
-                int[] sample = this.sample[sampleNum];
+
+                for (int tee : this.t[sampleCounter])
                 {
-                    yIn = this.bWeight[tVal];
-                    for (int i = 0; i < sample.length; i++)
-                    {
-                        yIn += sample[i] + this.weights[i][tVal];
-
-                    }
-                    float y = activationFunction(yIn);
-
-                    if (y != tVal) //add threshold here (isnt exact match or something)
-                    {
-                        updateWeights(tVal, sample);
-                        updateBias(tVal);
-                        tempNotConverged = true;
-                    }
+                
                     
+                            yIn = this.bWeight[tee];
+                        for (int i = 0; i < sample.length; i++)
+                        {
+                            yIn += sample[i] * this.weights[i][tee];
+
+                        }
+                        float y = activationFunction(yIn);
+                    
+                        if (Math.abs(y - tee) > this.weightThreshold) //add threshold here (isnt exact match or something)
+                        {
+                            updateWeights(tee, sample);
+                            updateBias(tee);
+                            tempNotConverged = true;
+                        }
                 }
+                sampleCounter += 1;    
             }
+            
+            
             if (tempNotConverged == false)
             {
                 NotConverged = false;
             }
+            else{
+                tempNotConverged = false;
+            }
             this.epoch += 1;
             
         }
-        create_results_file(this.resultsFilename);
+        
 
     }
 

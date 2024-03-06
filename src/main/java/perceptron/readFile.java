@@ -81,6 +81,11 @@ public class readFile {
 
                 perceptron p = new perceptron(weights, bweights, alpha, theta, samples, t, maxEpoch, resultsFilename, weightThreshold);
                 
+                for (int i = 0; i < samples.length; i++)
+                {
+                    p.train(i);
+                }
+                
             }
             else if (trainingSelection == 2){
                 invalidSelection = false;
