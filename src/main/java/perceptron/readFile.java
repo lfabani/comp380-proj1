@@ -2,8 +2,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.*;
 import java.util.Scanner;
+
+import javax.annotation.processing.Filer;
 
 
 public class readFile {
@@ -18,15 +21,18 @@ public class readFile {
         
         boolean invalidSelection = true;
         String filePath;
-        int[][] samples = new int[21][63]; //TODO: change hard coded values
-        int[][] t = new int[21][7]; //TODO: change hard coded values
+        int[][] samples; //TODO: change hard coded values
+        int[][] t; //TODO: change hard coded values
         while (invalidSelection){
             if (trainingSelection == 1){
                 invalidSelection = false;
 
                 System.out.println("Enter the training data file path: ");
                 filePath = userIn.nextLine(); //TODO: error check for invalid filename
-                int[] dimensions = read_file(filePath, samples, t);
+                int[] dimensions = read_file_dimensions(filePath);
+                samples = new int[dimensions[2]][dimensions[0]];
+                t = new int[dimensions[2]][dimensions[1]];
+                read_file(filePath, samples, t);
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
@@ -111,8 +117,36 @@ public class readFile {
         
     }
 
-    public static int[] read_file(String filePath, int[][] inputVals, int[][] tVals){
+    public static int[] read_file_dimensions(String filePath){
         int[] returnVals = new int[3];
+        try {
+            // Create a Filereader object to read the file 
+            FileReader fr = new FileReader(filePath);
+
+            //Wrap the FileReader in a BufferedReader for efficient reading
+            BufferedReader br = new BufferedReader(fr);
+
+            // Read first three lines and return dimensions
+            //to return input values
+            returnVals[0] = Integer.parseInt(br.readLine().strip());
+            //to return output values
+            returnVals[1] = Integer.parseInt(br.readLine().strip());
+            //to return training pairs
+            returnVals[2] = Integer.parseInt(br.readLine().strip());
+            
+            // Close BufferedReader and FileReader
+            br.close();
+            fr.close();
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return returnVals;
+    }
+
+    public static void read_file(String filePath, int[][] inputVals, int[][] tVals){
+        int[] dimensions = new int[3];
         try {
             // Create a FileReader object to read the file
             FileReader fileReader = new FileReader(filePath);
@@ -126,16 +160,16 @@ public class readFile {
             int dimCount = 0; //needed for count of what dim we are on. 
             int tCount = 0;
             
-            //to return input values
-            returnVals[0] = Integer.parseInt(bufferedReader.readLine().strip());
+            //to bypass input values
+            dimensions[0] = Integer.parseInt(bufferedReader.readLine().strip());
             //to return output values
-            returnVals[1] = Integer.parseInt(bufferedReader.readLine().strip());
+            dimensions[1] = Integer.parseInt(bufferedReader.readLine().strip());
             //to return training pairs
-            returnVals[2] = Integer.parseInt(bufferedReader.readLine().strip());
+            dimensions[2] = Integer.parseInt(bufferedReader.readLine().strip());
 
             String[][] indivSample = new String[9][7];  //TODO: change hard coded values
 
-            String[] letters = new String[returnVals[2]];
+            String[] letters = new String[dimensions[2]];
             int sampleCount = 0;
             // Read each line of the file until reaching the end
             line = bufferedReader.readLine();
@@ -191,8 +225,6 @@ public class readFile {
             // Handle any IO exceptions that may occur
             e.printStackTrace();
         }
-
-        return returnVals;
     }
 
     public static int[] convertStringListInt (String[] strList)
