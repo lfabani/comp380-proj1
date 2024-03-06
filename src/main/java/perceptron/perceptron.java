@@ -1,4 +1,9 @@
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Scanner;
+import java.io.FileOutputStream;
 
 class perceptron{
     private float[][] weights;
@@ -9,7 +14,9 @@ class perceptron{
     private int[][] t;
     private int epoch;
     private int maxEpoch;
-    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch)
+    private String resultsFilename;
+    private int weightThreshold;
+    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, String ResultsFilename, int WeightThreshold)
     {  
         this.weights = Weights;
         this.bWeight = BWeights;
@@ -19,8 +26,8 @@ class perceptron{
         this.t = T;
         this.epoch = 0; 
         this.maxEpoch = MaxEpoch;
-
-
+        this.resultsFilename = ResultsFilename;
+        this.weightThreshold = WeightThreshold;
     }
 
     private void updateWeights(int t,int[] sample)
@@ -38,11 +45,12 @@ class perceptron{
         this.bWeight[t] += this.alpha*t;
     }
 
-    public float compute(int sampleNum)
+    public void train(int sampleNum)
     {
         float yIn;
         boolean NotConverged = true;
         boolean tempNotConverged = false;
+        //TODO: we need to update this not converged logic to use the weight threshold
         while(NotConverged == true && this.epoch <= this.maxEpoch)
         {
            
@@ -72,21 +80,52 @@ class perceptron{
                 NotConverged = false;
             }
             this.epoch += 1;
+            
         }
-        return 0f;
+        create_results_file(this.resultsFilename);
+
     }
-    public float train()
+
+    public void create_results_file(String filename) {
+        File file = new File(filename);
+        try {
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+
+            // Write weights and bweights to the file
+            FileOutputStream fos = new FileOutputStream(file);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+
+            // Writing weights
+            writer.write(this.weights + "\n");
+
+            // Writing bweights
+            writer.write(this.bWeight + "\n");
+
+            // Close the writer
+            writer.close();
+            fos.close();
+
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
+    public void run()
     {
-        return 0f;
+       
     }
 
     private int activationFunction(float yIn)
     {
-        if (yIn < 0)
+        if (yIn < this.theta)
         {
             return -1;
         }
-        else if (yIn > 0)
+        else if (yIn > this.theta)
         {
             return 1;
         }
