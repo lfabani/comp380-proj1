@@ -50,9 +50,9 @@ public class readFile {
                 else { //TODO: error check for invalid selection
                     //initials weights
                     Random random = new Random();
-                    for (int i = 0; i < dimensions[0]; i++)
+                    for (int i = 0; i < dimensions[1]; i++)
                     {
-                        for (int j = 0; j < dimensions[1]; j++)
+                        for (int j = 0; j < dimensions[0]; j++)
                         {
                             weights[i][j] = (random.nextFloat()-0.5f);
                         }
