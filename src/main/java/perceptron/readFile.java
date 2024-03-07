@@ -126,6 +126,7 @@ public class readFile {
                 {
                     System.out.println(tes);
                 }
+                p.printAccuracy();
                 
             }
 
@@ -459,6 +460,7 @@ public class readFile {
 
                         //tval logic
                         tVals[sampleCount] = convertStringListInt(line.split(" "), dimensionsSizes[4]);
+
                         sampleCount ++;
 
                         //Find index of letter

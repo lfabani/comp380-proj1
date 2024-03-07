@@ -19,6 +19,7 @@ class perceptron{
     private int maxEpoch;
     private float weightThreshold;
     private String[] readableT;
+    private float accuracyPercent;
     
     public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, float WeightThreshold, String[] tALias)
     {  
@@ -32,6 +33,7 @@ class perceptron{
         this.maxEpoch = MaxEpoch;
         this.weightThreshold = WeightThreshold;
         this.readableT = tALias;
+        this.accuracyPercent = 0f;
         
     }
 
@@ -180,6 +182,7 @@ class perceptron{
         String megaString;
         String[] alias;
         String[] realAlias;
+        float numRight = 0f;
 
         for (int[] result : results)
         {
@@ -213,6 +216,7 @@ class perceptron{
                     {
                         finalAlias = al;
                         pass = true;
+                        numRight += 1;
                     }
                 }
             }
@@ -221,8 +225,13 @@ class perceptron{
             accuracyTest[resultCount] = megaString;
             resultCount++;
         }
+        this.accuracyPercent = numRight/(resultCount-1);
         
         return accuracyTest;
+    }
+    public void printAccuracy()
+    {
+        System.out.println("The accuracy of the model is: " + String.valueOf(this.accuracyPercent));
     }
 
     public int[][] run()

@@ -70,7 +70,7 @@ characters = {
 
 def generate_data_with_noise_to_file(characters, noise, filename):
     with open(filename, 'w') as file:
-        file.write("67\n7\n150\n\n")
+        file.write("67\n7\n1050\n\n")
         for i in range(150):    
             for char, pattern in characters.items():
                 
