@@ -101,7 +101,9 @@ public class readFile {
                 //read_samples_file(filePath, t, t);
 
                 System.out.println("Enter the name of the trained weight settings data file: ");
-                read_trained_weights_file(filePath);
+                
+                
+                //read_trained_weights_file(filePath);
 
                  //TODO: error check for invalid filename
                 //make perceptron here using default constructor
@@ -145,8 +147,173 @@ public class readFile {
         }
         return returnVals;
     }
+    public static float[] read_trained_thresholds_file(String filePath, int numWeights)
+    {
+        /*@Returns: returns
+            * returns[0]  -> theta
+            * returns[1] -> alpha
+            * returns[2] -> weight threshold
+         */
+        float[] returns = new float[3];
 
-    public static void read_trained_weights_file(String filePath){
+        try {
+            // Create a Filereader object to read the file 
+            FileReader fr = new FileReader(filePath);
+
+            //Wrap the FileReader in a BufferedReader for efficient reading
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            line = br.readLine();
+            int blankCount = 0;
+            
+            
+            while (line != null) {
+                if (line.length() == 0) //this is what separates each val
+                {
+                    blankCount ++;
+                }
+                
+                else if (blankCount == 2) //we are at theta!
+                { 
+                    if (!line.equals("") && !line.equals(" "))
+                    {
+                        returns[0] = Float.parseFloat(line);
+                        
+                    }
+                }
+                else if (blankCount == 3) //we are at alpha!
+                { 
+                    if (!line.equals("") && !line.equals(" "))
+                    {
+                        returns[1] = Float.parseFloat(line);
+                        
+                    }
+                }
+                else if (blankCount == 4) //we are at threshold!
+                { 
+                    if (!line.equals("") && !line.equals(" "))
+                    {
+                        returns[2] = Float.parseFloat(line);
+                        
+                    }
+                }
+                
+
+            
+            }
+            // Close BufferedReader and FileReader
+            br.close();
+            fr.close();
+            
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return returns;
+    }
+    public static float[] read_trained_Bweights_file(String filePath, int numWeights)
+    {
+        
+        float[] biasWeights = new float[numWeights];
+
+        try {
+            // Create a Filereader object to read the file 
+            FileReader fr = new FileReader(filePath);
+
+            //Wrap the FileReader in a BufferedReader for efficient reading
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            line = br.readLine();
+            int blankCount = 0;
+            int weightIndex = 0;
+            
+            while (line != null) {
+                if (line.length() == 0) //this is what separates each val
+                {
+                    blankCount ++;
+                }
+                
+                else if (blankCount == 1) //we are at bias weights!
+                {
+                    String[] splitLine = line.split(" ");
+                    
+                    for (String weight : splitLine)
+                    {
+                        if (!weight.equals("") && !weight.equals(" "))
+                        {
+                            biasWeights[weightIndex] = Float.parseFloat(weight);
+                            weightIndex++;
+                        }
+                        
+                    }
+                }
+
+            
+            }
+            // Close BufferedReader and FileReader
+            br.close();
+            fr.close();
+            
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return biasWeights;
+    }
+
+    public static float[][] read_trained_weights_file(String filePath, int numWeights, int numSamples){
+        
+        float[][] weights = new float[numSamples][numWeights];
+
+        try {
+            // Create a Filereader object to read the file 
+            FileReader fr = new FileReader(filePath);
+
+            //Wrap the FileReader in a BufferedReader for efficient reading
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            line = br.readLine();
+            int blankCount = 0;
+            int weightIndex = 0;
+            int sampleCounter = 0;
+            while (line != null) {
+                if (line.length() == 0) //this is what separates each val
+                {
+                    blankCount ++;
+                }
+                else if (blankCount == 0) //weights w/o bias
+                {
+                    String[] splitLine = line.split(" ");
+                    
+                    for (String weight : splitLine)
+                    {
+                        if (!weight.equals("") && !weight.equals(" "))
+                        {
+                            weights[sampleCounter][weightIndex] = Float.parseFloat(weight);
+                            weightIndex++;
+                        }
+                        
+                    }
+                    sampleCounter ++;
+                }
+                else if (blankCount == 1) //we are at bias weights!
+                {
+                    break;
+                }
+            
+            }
+            // Close BufferedReader and FileReader
+            br.close();
+            fr.close();
+            
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return weights;
 
     }
 

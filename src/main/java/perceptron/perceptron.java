@@ -205,13 +205,10 @@ class perceptron{
         {
             return -1;
         }
-        else if (yIn > this.theta)
+        else
         {
             return 1;
         }
-        else
-        {
-            return 0;
-        }
+        
     }
 }
