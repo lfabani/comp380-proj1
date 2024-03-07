@@ -4,23 +4,42 @@ import java.io.IOException;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JPanel;
 
 public class statistics {
        // Embedding PointGrapher as an inner class
     private static class PointGrapher extends JPanel {
-
-        private List<Point> points;
-
+        private static class PointF {
+            private float x;
+            private float y;
+    
+            public PointF(float x, float y) {
+                this.x = x;
+                this.y = y;
+            }
+    
+            public float getX() {
+                return x;
+            }
+    
+            public float getY() {
+                return y;
+            }
+        }
+        private List<PointF> points;
+        private static final int WIDTH = 400;
+        private static final int HEIGHT = 400;
+        private static final int MARGIN = 20;
         public PointGrapher() {
             points = new ArrayList<>();
         }
 
-        public void addPoint(Point point) {
-            points.add(point);
+        public void addPoint(float x, float y) {
+            points.add(new PointF(x, y));
+            
+        }
+        public void paintIt()
+        {
             repaint(); // Request the panel to be repainted
         }
 
@@ -31,14 +50,20 @@ public class statistics {
 
             // Set rendering hints for smoother graphics
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            // Define the scales and margins as float
+            float xMargin = MARGIN; // Left margin
+            float yMargin = getHeight() - MARGIN; // Bottom margin
+            float xScale = (getWidth() - 2 * MARGIN) / (points.size() - 1); // Calculate x scale
+            float yScale = (getHeight() - 2 * MARGIN) / (points.size() - 1); // Calculate y scale
 
-            // Draw each point
-            g2d.setColor(Color.RED); // Set the color for the points
-            for (Point point : points) {
-                int x = (int) point.getX();
-                int y = (int) point.getY();
-                g2d.fillOval(x, y, 5, 5); // Draw a small oval at the point
+            // Plot points
+            for (PointF point : points) {
+                int x = Math.round(xMargin + point.x * xScale);
+                int y = Math.round(yMargin - point.y * yScale);
+                g.fillOval(x - 2, y - 2, 4, 4); // Draw a small circle for each point
             }
+            // Draw each point
+           
         }
     }
 
@@ -60,7 +85,24 @@ public class statistics {
         int[][] t = new int[dimensions[2]][dimensions[1]];
         read_samples_file(filePath, samples, t, dimensions,letters);
 
+        JFrame frame = new JFrame("Multiple Graphs");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(2, 2)); // Set grid layout for multiple graphs
+        frame.setSize(800, 600);
+
+        PointGrapher grapher = new PointGrapher();
+
+        for (float theta = 0; theta < 1; theta += 0.05)
+        {
+            run(weightsFile, dimensions, letters, samples, t, grapher, theta, 1);
+        }
+        grapher.paintIt();
+        userIn.close(); 
+
+    }
         //graph theta changing
+    public static void run(String weightsFile,int[] dimensions, String[] letters, int[][] samples, int[][] t,PointGrapher grapher, float theta, float alpha)
+    {
             letters = read_trained_alias_file(weightsFile, dimensions[1]);
         
             
@@ -69,20 +111,18 @@ public class statistics {
             float[][] weights = read_trained_weights_file(weightsFile, dimensions[0], dimensions[1]);
             float[] bWeights = read_trained_Bweights_file(weightsFile, dimensions[1]);
             float[] specials = read_trained_thresholds_file(weightsFile);
-            float theta = specials[0];
-            float alpha = specials[1];
+            
             float weightThresh = specials[2];
 
             perceptron p = new perceptron(weights, bWeights, alpha, theta, samples, t, 100, weightThresh,letters);
             int[][] results = p.run();
             String[] test = p.test(results);
             System.out.println("trained");
-            for (String tes: test)
-            {
-                System.out.println(tes);
-            }
+            
             p.printAccuracy();
-        userIn.close();    
+            float accuracy = p.getAccuracy();
+            grapher.addPoint(theta,accuracy);
+           
         }
 
         public static int[] read_file_dimensions(String filePath){
