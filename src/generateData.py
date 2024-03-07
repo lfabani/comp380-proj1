@@ -91,4 +91,5 @@ def generate_data_with_noise_to_file(characters, noise, filename):
                 file.write(char[0] + '\n')
                 file.write('\n')
 
-generate_data_with_noise_to_file(characters,0.2,"0pt2NoiseTraining.txt")
+noise = input("Enter a desired Noisiness (0.00-1.00) exclusive: ")
+generate_data_with_noise_to_file(characters,noise,"0pt2NoiseTraining.txt")
