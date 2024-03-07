@@ -234,6 +234,11 @@ class perceptron{
         System.out.println("The accuracy of the model is: " + String.valueOf(this.accuracyPercent));
     }
 
+    public float getAccuracy()
+    {
+        return this.accuracyPercent;
+    }
+
     public int[][] run()
     {
         int[][] results = new int[this.sample.length][this.t[0].length];
