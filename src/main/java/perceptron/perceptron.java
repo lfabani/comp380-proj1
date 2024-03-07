@@ -2,9 +2,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Scanner;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 import java.io.FileOutputStream;
 
@@ -39,6 +36,14 @@ class perceptron{
 
     private void updateWeights(int t,int[] sample, int sampleCounter)
     {
+        /*
+         * This function updates a set of weights
+         * 
+         * @param t The index of the output neuron for which we are updating the weights
+         * @param sample The array of weights that we are updating
+         * @param sampleCounter The index of the sample that we are currently training on
+         */
+
         System.out.println("updateWeights called\n");
         for (int i = 0; i<this.weights[t].length; i++)
         {
@@ -48,12 +53,21 @@ class perceptron{
     }
     private void updateBias(int t, int sampleCounter)
     {
+        /*
+         * This function updates a set of bias weights
+         * 
+         * @param t The index of the output neuron for which we are updating the weights
+         * @param sampleCounter The index of the sample that we are currently training on
+         */
 
         this.bWeight[t] += this.alpha*this.t[sampleCounter][t];
     }
 
     public void train()
     {
+        /*
+         * This function trains our perceptron
+         */
         float yIn;
         boolean NotConverged = true;
         boolean tempNotConverged = false;
@@ -76,7 +90,7 @@ class perceptron{
 
                         }
                         float y = activationFunction(yIn);
-                        if (Math.abs(y - this.t[sampleCounter][tee]) > this.weightThreshold) //add threshold here (isnt exact match or something)
+                        if (Math.abs(y - this.t[sampleCounter][tee]) > this.weightThreshold) //add threshold here (isnt exact match or something) 
                         {
                             updateWeights(tee, sample, sampleCounter);
                             updateBias(tee,sampleCounter);
@@ -101,7 +115,13 @@ class perceptron{
 
     }
 
-    public void create_results_file(String filename) {
+    public void create_results_file(String filename) 
+    {
+        /*
+         * This function writes our updated weights into a results file 
+         * 
+         * @param filename The user specified file name to write the results into
+         */
         File file = new File(filename);
         try {
             if (file.createNewFile()) {
@@ -160,6 +180,14 @@ class perceptron{
 
     private static String[] whatLetter(int[] predicted, String[] aliases)
     {
+        /*
+         * This function determines what alias an output vector corresponds to
+         * 
+         * @param predicted The output vector to classify as an alias
+         * @param aliases A list of aliases indexed by their corresponding output vector
+         * 
+         * @return letter The alias that corresponds to the given output vector
+         */
         String[] letter = new String[predicted.length];
         int letterCount = 0;
         for (int num = 0; num < predicted.length; num++)
@@ -175,6 +203,13 @@ class perceptron{
     }
     public String[] test(int[][] results)
     {
+        /*
+         * This function applies a set of trained weights to a file of samples to classify
+         * 
+         * @param results An array of arrays of input neurons to classify
+         * 
+         * @return accuracyTest A string array with the results of classification 
+         */
         String[] accuracyTest = new String[results.length]; 
         int resultCount = 0;
         String expectedVal;
@@ -229,8 +264,12 @@ class perceptron{
         
         return accuracyTest;
     }
+
     public void printAccuracy()
     {
+        /*
+         * This function prints the results of our classification to the terminal
+         */
         System.out.println("The accuracy of the model is: " + String.valueOf(this.accuracyPercent));
     }
 
@@ -241,6 +280,12 @@ class perceptron{
 
     public int[][] run()
     {
+        /*
+         * This function computes the y value based on the input sample and the calculated weights 
+         * 
+         * @return results An array containing the given y value for each sample
+         */
+
         int[][] results = new int[this.sample.length][this.t[0].length];
         int sampleCount = 0;
        for (int[] sample : this.sample)
@@ -268,6 +313,13 @@ class perceptron{
 
     private int activationFunction(float yIn)
     {
+        /*
+         * This function converts the computed yIn value to the y value using the activation function
+         * 
+         * @param yIn The computed yIn value
+         * 
+         * @return 1 or -1 The acviated y value
+         */
         if (yIn < this.theta)
         {
             return -1;
