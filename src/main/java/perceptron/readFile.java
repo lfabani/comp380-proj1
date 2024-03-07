@@ -94,12 +94,9 @@ public class readFile {
 
                 System.out.println("Enter the name of the file to classify: ");
                 filePath = userIn.nextLine();
-                //read_samples_file(filePath, t, t);
 
                 System.out.println("Enter the name of the trained weight settings data file: ");
                 
-                
-                //read_trained_weights_file(filePath);
                 String weightsFile = userIn.next();
                 
                 
