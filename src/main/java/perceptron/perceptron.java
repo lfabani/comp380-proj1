@@ -149,7 +149,7 @@ class perceptron{
     }
     public boolean[] test(int[][] results)
     {
-        boolean[] accuracyTest = new boolean[results[0].length]; 
+        boolean[] accuracyTest = new boolean[results.length]; 
         int resultCount = 0;
         
         for (int[] result : results)

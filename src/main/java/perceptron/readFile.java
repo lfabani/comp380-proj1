@@ -15,7 +15,7 @@ public class readFile {
         Scanner userIn = new Scanner(System.in);
 
         System.out.println("Welcome to my first neural network - A Perceptron Net!");
-        System.out.println("Enter 1 to train using a training data file, enter 2 to use a trained weight settings data file: ");
+        System.out.println("Enter 1 to train using a training data file\nEnter 2 to use a trained weight settings data file\nEnter any other character to quit ");
 
         int trainingSelection = Integer.valueOf(userIn.nextLine());
         
@@ -25,7 +25,7 @@ public class readFile {
         int[][] t; //TODO: change hard coded values
         while (invalidSelection){
             if (trainingSelection == 1){
-                invalidSelection = false;
+                
 
                 System.out.println("Enter the training data file path: ");
                 filePath = userIn.nextLine(); //TODO: error check for invalid filename
@@ -89,12 +89,12 @@ public class readFile {
                 
                 p.train();
                 p.create_results_file(resultsFilename);
-                System.out.println("trained");
+                
     
                 
             }
             else if (trainingSelection == 2){
-                invalidSelection = false;
+                
 
                 System.out.println("Enter the name of the file to classify: ");
                 filePath = userIn.nextLine();
@@ -104,14 +104,36 @@ public class readFile {
                 
                 
                 //read_trained_weights_file(filePath);
+                String weightsFile = userIn.next();
+                
+                
+                int[] dimensions = read_file_dimensions(filePath);
+                samples = new int[dimensions[2]][dimensions[0]];
+                t = new int[dimensions[2]][dimensions[1]];
+                read_samples_file(filePath, samples, t);
 
-                 //TODO: error check for invalid filename
-                //make perceptron here using default constructor
+                float[][] weights = read_trained_weights_file(weightsFile, dimensions[0], dimensions[2]);
+                float[] bWeights = read_trained_Bweights_file(weightsFile, dimensions[1]);
+                float[] specials = read_trained_thresholds_file(weightsFile);
+                float theta = specials[0];
+                float alpha = specials[1];
+                float weightThresh = specials[2];
+
+                perceptron p = new perceptron(weights, bWeights, alpha, theta, samples, t, 100, weightThresh);
+                int[][] results = p.run();
+                boolean[] test = p.test(results);
+                System.out.println("trained");
+                for (boolean tes: test)
+                {
+                    System.out.println(tes);
+                }
+                
             }
 
             else{
-                System.out.println("Invalid selection! Please choose 1 or 2: ");
-                trainingSelection = Integer.valueOf(userIn.nextLine());
+                System.out.println("Quit ");
+                invalidSelection = false;
+                
             }
         }
 
@@ -147,7 +169,7 @@ public class readFile {
         }
         return returnVals;
     }
-    public static float[] read_trained_thresholds_file(String filePath, int numWeights)
+    public static float[] read_trained_thresholds_file(String filePath)
     {
         /*@Returns: returns
             * returns[0]  -> theta
