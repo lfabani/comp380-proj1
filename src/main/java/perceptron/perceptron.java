@@ -18,6 +18,7 @@ class perceptron{
     private int epoch;
     private int maxEpoch;
     private float weightThreshold;
+    private String[] readableT;
     
     public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, float WeightThreshold)
     {  
@@ -147,25 +148,33 @@ class perceptron{
             System.err.println(e);
         }
     }
-    public boolean[] test(int[][] results)
+    public String[] test(int[][] results)
     {
-        boolean[] accuracyTest = new boolean[results.length]; 
+        String[] accuracyTest = new String[results.length]; 
         int resultCount = 0;
-        
+        String expectedVal = "";
+        String Predicted = "";
+        String megaString = "";
         for (int[] result : results)
         {
             boolean pass = true;
+            expectedVal = "";
+            Predicted = "";
+            megaString = "";
+
             //iterate through each int in result and make sure they all match!
             for (int i = 0; i < result.length; i++)
             {
-                int val = result[i];
-                int compareT = this.t[resultCount][i];
-                if (val != compareT)
-                {
-                    pass = false;
-                }
+                expectedVal += String.valueOf(this.t[resultCount][i])+ " ";
+                Predicted += String.valueOf(result[i]) + " ";
+                
             }
-            accuracyTest[resultCount] = pass;
+            if (!expectedVal.equals(Predicted))
+            {
+                pass = false;
+            }
+            megaString += "Expected Value: " + expectedVal +"\nPredicted Value: " + Predicted + "\nMatch: " + String.valueOf(pass);
+            accuracyTest[resultCount] = megaString;
             resultCount++;
         }
         

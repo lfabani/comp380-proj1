@@ -15,24 +15,23 @@ public class readFile {
         Scanner userIn = new Scanner(System.in);
 
         System.out.println("Welcome to my first neural network - A Perceptron Net!");
-        System.out.println("Enter 1 to train using a training data file\nEnter 2 to use a trained weight settings data file\nEnter any other character to quit ");
-
+        System.out.println("Enter 1 to train using a training data file\nEnter 2 to use a trained weight settings data file\nEnter any other number to quit ");
         int trainingSelection = Integer.valueOf(userIn.nextLine());
-        
+
         boolean invalidSelection = true;
         String filePath;
-        int[][] samples; //TODO: change hard coded values
-        int[][] t; //TODO: change hard coded values
+        int[][] samples; 
+        int[][] t; 
         while (invalidSelection){
-            if (trainingSelection == 1){
-                
 
+            if (trainingSelection == 1){
+                invalidSelection = false;
                 System.out.println("Enter the training data file path: ");
                 filePath = userIn.nextLine(); //TODO: error check for invalid filename
                 int[] dimensions = read_file_dimensions(filePath);
                 samples = new int[dimensions[2]][dimensions[0]];
                 t = new int[dimensions[2]][dimensions[1]];
-                read_samples_file(filePath, samples, t);
+                read_samples_file(filePath, samples, t, dimensions);
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
@@ -94,7 +93,7 @@ public class readFile {
                 
             }
             else if (trainingSelection == 2){
-                
+                invalidSelection = false;
 
                 System.out.println("Enter the name of the file to classify: ");
                 filePath = userIn.nextLine();
@@ -110,9 +109,9 @@ public class readFile {
                 int[] dimensions = read_file_dimensions(filePath);
                 samples = new int[dimensions[2]][dimensions[0]];
                 t = new int[dimensions[2]][dimensions[1]];
-                read_samples_file(filePath, samples, t);
+                read_samples_file(filePath, samples, t, dimensions);
 
-                float[][] weights = read_trained_weights_file(weightsFile, dimensions[0], dimensions[2]);
+                float[][] weights = read_trained_weights_file(weightsFile, dimensions[0], dimensions[1]);
                 float[] bWeights = read_trained_Bweights_file(weightsFile, dimensions[1]);
                 float[] specials = read_trained_thresholds_file(weightsFile);
                 float theta = specials[0];
@@ -121,9 +120,9 @@ public class readFile {
 
                 perceptron p = new perceptron(weights, bWeights, alpha, theta, samples, t, 100, weightThresh);
                 int[][] results = p.run();
-                boolean[] test = p.test(results);
+                String[] test = p.test(results);
                 System.out.println("trained");
-                for (boolean tes: test)
+                for (String tes: test)
                 {
                     System.out.println(tes);
                 }
@@ -131,19 +130,15 @@ public class readFile {
             }
 
             else{
-                System.out.println("Quit ");
-                invalidSelection = false;
-                
+                System.out.println("Invalid selection: ");                
             }
         }
 
-        userIn.close();
-
-        
+        userIn.close();  
     }
 
     public static int[] read_file_dimensions(String filePath){
-        int[] returnVals = new int[3];
+        int[] returnVals = new int[5];
         try {
             // Create a Filereader object to read the file 
             FileReader fr = new FileReader(filePath);
@@ -158,6 +153,18 @@ public class readFile {
             returnVals[1] = Integer.parseInt(br.readLine().strip());
             //to return training pairs
             returnVals[2] = Integer.parseInt(br.readLine().strip());
+
+            //skip blank line
+            br.readLine();
+
+            //find how many lines the input neurons are split into
+            String line;
+            int lineCounter = 0; 
+            while (!(line = br.readLine()).equals("")){
+                lineCounter++;
+            } 
+            returnVals[3] = lineCounter; //number of rows
+            returnVals[4] = returnVals[0] / lineCounter; //number of columns
             
             // Close BufferedReader and FileReader
             br.close();
@@ -185,11 +192,10 @@ public class readFile {
             //Wrap the FileReader in a BufferedReader for efficient reading
             BufferedReader br = new BufferedReader(fr);
             String line;
-            line = br.readLine();
             int blankCount = 0;
             
             
-            while (line != null) {
+            while ((line = br.readLine()) != null) {
                 if (line.length() == 0) //this is what separates each val
                 {
                     blankCount ++;
@@ -249,11 +255,10 @@ public class readFile {
             //Wrap the FileReader in a BufferedReader for efficient reading
             BufferedReader br = new BufferedReader(fr);
             String line;
-            line = br.readLine();
             int blankCount = 0;
             int weightIndex = 0;
             
-            while (line != null) {
+            while ((line = br.readLine()) != null) {
                 if (line.length() == 0) //this is what separates each val
                 {
                     blankCount ++;
@@ -269,12 +274,9 @@ public class readFile {
                         {
                             biasWeights[weightIndex] = Float.parseFloat(weight);
                             weightIndex++;
-                        }
-                        
+                        }                       
                     }
                 }
-
-            
             }
             // Close BufferedReader and FileReader
             br.close();
@@ -288,12 +290,12 @@ public class readFile {
         return biasWeights;
     }
 
-    public static float[][] read_trained_weights_file(String filePath, int numWeights, int numSamples){
-        /*@Returns: float[][] biasWeights -> an array containing each weight 
+    public static float[][] read_trained_weights_file(String filePath, int numWeights, int numOutputNeurons){
+        /*@Returns: float[][] Weights -> an array containing each weight 
             * float[0] -> array of all weights for output neuron '0'
                 *each of the rows are weight array for that index output neuron
          */
-        float[][] weights = new float[numSamples][numWeights];
+        float[][] weights = new float[numOutputNeurons][numWeights];
 
         try {
             // Create a Filereader object to read the file 
@@ -302,11 +304,11 @@ public class readFile {
             //Wrap the FileReader in a BufferedReader for efficient reading
             BufferedReader br = new BufferedReader(fr);
             String line;
-            line = br.readLine();
             int blankCount = 0;
             int weightIndex = 0;
             int sampleCounter = 0;
-            while (line != null) {
+            while ((line = br.readLine()) != null) {
+
                 if (line.length() == 0) //this is what separates each val
                 {
                     blankCount ++;
@@ -314,7 +316,7 @@ public class readFile {
                 else if (blankCount == 0) //weights w/o bias
                 {
                     String[] splitLine = line.split(" ");
-                    
+                    weightIndex = 0;
                     for (String weight : splitLine)
                     {
                         if (!weight.equals("") && !weight.equals(" "))
@@ -345,7 +347,7 @@ public class readFile {
 
     }
 
-    public static void read_samples_file(String filePath, int[][] inputVals, int[][] tVals){
+    public static void read_samples_file(String filePath, int[][] inputVals, int[][] tVals, int[] dimensionsSizes){
         int[] dimensions = new int[3];
         try {
             // Create a FileReader object to read the file
@@ -367,7 +369,7 @@ public class readFile {
             //to return training pairs
             dimensions[2] = Integer.parseInt(bufferedReader.readLine().strip());
 
-            String[][] indivSample = new String[9][7];  //TODO: change hard coded values
+            String[][] indivSample = new String[dimensionsSizes[3]][dimensionsSizes[4]];  //TODO: change hard coded values
 
             String[] letters = new String[dimensions[2]];
             int sampleCount = 0;
@@ -388,7 +390,7 @@ public class readFile {
                         inputVals[sampleCount] = convertTo1D(indivSample);
 
                         //tval logic
-                        tVals[sampleCount] = convertStringListInt(line.split(" "));
+                        tVals[sampleCount] = convertStringListInt(line.split(" "), dimensionsSizes[4]);
                         sampleCount ++;
 
                         count = 0;
@@ -427,9 +429,9 @@ public class readFile {
         }
     }
 
-    public static int[] convertStringListInt (String[] strList)
+    public static int[] convertStringListInt (String[] strList, int numColumns)
     {
-        int[] intList = new int[7];  //TODO: change hard coded values
+        int[] intList = new int[numColumns];  
         int i = 0;
         for (String bruh : strList)
         {
