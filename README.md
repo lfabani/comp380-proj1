@@ -19,3 +19,4 @@ Lines 5-9 are repeated n times, once for each sample listed in line 3
 The output data file contains o lines of i trained weights (type: float) followed by one line of o trained bias weights (type: float), each weight separated by a space. It then contains a blank line, the chosen alpha, blank line, the chosen theta, blank line, and the chosen convergence threshold
 
 
+If every value in returned output vector is -1, program guesses that the letter is A

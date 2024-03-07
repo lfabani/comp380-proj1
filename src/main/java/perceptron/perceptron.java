@@ -20,7 +20,7 @@ class perceptron{
     private float weightThreshold;
     private String[] readableT;
     
-    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, float WeightThreshold)
+    public perceptron(float[][] Weights, float[] BWeights, float Alpha, float Theta, int[][] Samples, int[][] T, int MaxEpoch, float WeightThreshold, String[] tALias)
     {  
         this.weights = Weights;
         this.bWeight = BWeights;
@@ -31,6 +31,7 @@ class perceptron{
         this.epoch = 0; 
         this.maxEpoch = MaxEpoch;
         this.weightThreshold = WeightThreshold;
+        this.readableT = tALias;
         
     }
 
@@ -55,7 +56,7 @@ class perceptron{
         boolean NotConverged = true;
         boolean tempNotConverged = false;
         int sampleCounter = 0;
-        //TODO: we need to update this not converged logic to use the weight threshold
+
         while(NotConverged == true && this.epoch <= this.maxEpoch)
         {
             sampleCounter = 0;
@@ -81,7 +82,7 @@ class perceptron{
                             tempNotConverged = true;
                         }
                 }
-                sampleCounter += 1;    
+                sampleCounter += 1; 
             }
             
             
@@ -135,11 +136,18 @@ class perceptron{
 
             //now we gotta write the theta, alpha, and weight Threshold
 
-            writer.write(String.valueOf(this.theta)+ "\n");
+            writer.write(String.valueOf(this.theta) + "\n");
             writer.write("\n"); //add a gap to make it easy to differentiate!
             writer.write(String.valueOf(this.alpha) + "\n");
             writer.write("\n"); //add a gap to make it easy to differentiate!
-            writer.write(String.valueOf(this.weightThreshold));
+            writer.write(String.valueOf(this.weightThreshold) + "\n");
+            writer.write("\n"); //add a gap to make it easy to differentiate!
+            String aliasString = "";
+            for (String alias : this.readableT)
+            {
+                aliasString += alias + " ";
+            }
+            writer.write(aliasString);
             // Close the writer
             writer.close();
             fos.close();
@@ -148,19 +156,40 @@ class perceptron{
             System.err.println(e);
         }
     }
+
+    private static String[] whatLetter(int[] predicted, String[] aliases)
+    {
+        String[] letter = new String[predicted.length];
+        int letterCount = 0;
+        for (int num = 0; num < predicted.length; num++)
+        {
+            if (predicted[num] == 1)
+            {
+                letter[letterCount] = aliases[num];
+                letterCount++;
+            }
+        }
+        
+        return letter;
+    }
     public String[] test(int[][] results)
     {
         String[] accuracyTest = new String[results.length]; 
         int resultCount = 0;
-        String expectedVal = "";
-        String Predicted = "";
-        String megaString = "";
+        String expectedVal;
+        String Predicted;
+        String megaString;
+        String[] alias;
+        String[] realAlias;
+
         for (int[] result : results)
         {
-            boolean pass = true;
+            boolean pass = false;
             expectedVal = "";
             Predicted = "";
             megaString = "";
+            alias = new String[result.length];
+            realAlias = new String[result.length];;
 
             //iterate through each int in result and make sure they all match!
             for (int i = 0; i < result.length; i++)
@@ -169,11 +198,27 @@ class perceptron{
                 Predicted += String.valueOf(result[i]) + " ";
                 
             }
-            if (!expectedVal.equals(Predicted))
+            //figure out alias
+            realAlias = whatLetter(this.t[resultCount], this.readableT);
+            alias = whatLetter(result, this.readableT);
+            String finalAlias = alias[0];
+            String realFinal = realAlias[0];
+            for (int i = 0; i < alias.length; i++)
             {
-                pass = false;
+                String al = alias[i];
+                for (int j = 0; j < realAlias.length; j++)
+                {
+                    String compareAl = realAlias[j];
+
+                    if (compareAl != null && al != null && compareAl.equals(al))
+                    {
+                        finalAlias = al;
+                        pass = true;
+                    }
+                }
             }
-            megaString += "Expected Value: " + expectedVal +"\nPredicted Value: " + Predicted + "\nMatch: " + String.valueOf(pass);
+            
+            megaString += "Expected Value: " + expectedVal + " AKA: " + realFinal +"\nPredicted Value: " + Predicted + " AKA: " + finalAlias + "\nMatch: " + String.valueOf(pass);
             accuracyTest[resultCount] = megaString;
             resultCount++;
         }

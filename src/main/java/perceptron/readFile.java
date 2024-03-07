@@ -2,12 +2,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.*;
 import java.util.Scanner;
-
-import javax.annotation.processing.Filer;
-
 
 public class readFile {
     public static void main(String[] args)
@@ -27,11 +23,12 @@ public class readFile {
             if (trainingSelection == 1){
                 invalidSelection = false;
                 System.out.println("Enter the training data file path: ");
-                filePath = userIn.nextLine(); //TODO: error check for invalid filename
+                filePath = userIn.nextLine(); 
                 int[] dimensions = read_file_dimensions(filePath);
                 samples = new int[dimensions[2]][dimensions[0]];
                 t = new int[dimensions[2]][dimensions[1]];
-                read_samples_file(filePath, samples, t, dimensions);
+                String[] letters = new String[dimensions[1]];
+                read_samples_file(filePath, samples, t, dimensions, letters);
 
                 System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
                 int weightSelection = Integer.valueOf(userIn.nextLine());
@@ -52,7 +49,7 @@ public class readFile {
                             bweights[i] = 0;
                         }
                 }
-                else { //TODO: error check for invalid selection
+                else { 
                     //initials weights
                     Random random = new Random();
                     for (int i = 0; i < dimensions[1]; i++)
@@ -84,7 +81,7 @@ public class readFile {
                 System.out.println("Enter the threshold to be used for measuring weight changes: ");
                 float weightThreshold = userIn.nextFloat();
 
-                perceptron p = new perceptron(weights, bweights, alpha, theta, samples, t, maxEpoch, weightThreshold);
+                perceptron p = new perceptron(weights, bweights, alpha, theta, samples, t, maxEpoch, weightThreshold, letters);
                 
                 p.train();
                 p.create_results_file(resultsFilename);
@@ -107,10 +104,13 @@ public class readFile {
                 
                 
                 int[] dimensions = read_file_dimensions(filePath);
+                String[] letters = new String[dimensions[1]];
+                letters = read_trained_alias_file(weightsFile, dimensions[1]);
                 samples = new int[dimensions[2]][dimensions[0]];
                 t = new int[dimensions[2]][dimensions[1]];
-                read_samples_file(filePath, samples, t, dimensions);
-
+                
+                read_samples_file(filePath, samples, t, dimensions,letters);
+                
                 float[][] weights = read_trained_weights_file(weightsFile, dimensions[0], dimensions[1]);
                 float[] bWeights = read_trained_Bweights_file(weightsFile, dimensions[1]);
                 float[] specials = read_trained_thresholds_file(weightsFile);
@@ -118,7 +118,7 @@ public class readFile {
                 float alpha = specials[1];
                 float weightThresh = specials[2];
 
-                perceptron p = new perceptron(weights, bWeights, alpha, theta, samples, t, 100, weightThresh);
+                perceptron p = new perceptron(weights, bWeights, alpha, theta, samples, t, 100, weightThresh,letters);
                 int[][] results = p.run();
                 String[] test = p.test(results);
                 System.out.println("trained");
@@ -289,6 +289,55 @@ public class readFile {
         }
         return biasWeights;
     }
+    public static String[] read_trained_alias_file(String filePath, int numOutputNeurons)
+    {
+        /*@Returns: float[] biasWeights -> an array containing each bias (each index is bias for output neuron)
+         * 
+         */
+        
+        String[] aliases = new String[numOutputNeurons];
+
+        try {
+            // Create a Filereader object to read the file 
+            FileReader fr = new FileReader(filePath);
+
+            //Wrap the FileReader in a BufferedReader for efficient reading
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            int blankCount = 0;
+            int weightIndex = 0;
+            
+            while ((line = br.readLine()) != null) {
+                if (line.length() == 0) //this is what separates each val
+                {
+                    blankCount ++;
+                }
+                
+                else if (blankCount == 5) //we are at bias weights!
+                {
+                    String[] splitLine = line.split(" ");
+                    
+                    for (String weight : splitLine)
+                    {
+                        if (!weight.equals("") && !weight.equals(" "))
+                        {
+                            aliases[weightIndex] = weight;
+                            weightIndex++;
+                        }                       
+                    }
+                }
+            }
+            // Close BufferedReader and FileReader
+            br.close();
+            fr.close();
+            
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return aliases;
+    }
 
     public static float[][] read_trained_weights_file(String filePath, int numWeights, int numOutputNeurons){
         /*@Returns: float[][] Weights -> an array containing each weight 
@@ -347,7 +396,7 @@ public class readFile {
 
     }
 
-    public static void read_samples_file(String filePath, int[][] inputVals, int[][] tVals, int[] dimensionsSizes){
+    public static void read_samples_file(String filePath, int[][] inputVals, int[][] tVals, int[] dimensionsSizes, String[] letters){
         int[] dimensions = new int[3];
         try {
             // Create a FileReader object to read the file
@@ -361,6 +410,7 @@ public class readFile {
             int count = 0; //keep track of how many spaces we are at!
             int dimCount = 0; //needed for count of what dim we are on. 
             int tCount = 0;
+            int index = 0; //index of first 1 tVals to classify output neurons as aliases 
             
             //to bypass input values
             dimensions[0] = Integer.parseInt(bufferedReader.readLine().strip());
@@ -371,7 +421,7 @@ public class readFile {
 
             String[][] indivSample = new String[dimensionsSizes[3]][dimensionsSizes[4]];  //TODO: change hard coded values
 
-            String[] letters = new String[dimensions[2]];
+            
             int sampleCount = 0;
             // Read each line of the file until reaching the end
             line = bufferedReader.readLine();
@@ -393,13 +443,24 @@ public class readFile {
                         tVals[sampleCount] = convertStringListInt(line.split(" "), dimensionsSizes[4]);
                         sampleCount ++;
 
-                        count = 0;
+                        //Find index of letter
+                        for (int num = 0; num < tVals[sampleCount-1].length; num++)
+                        {
+                            if (tVals[sampleCount-1][num] == 1)
+                            {
+                                index = num;
+                            }
+                        }
+
+                        
                     }
                     else
                     {
-                        letters[sampleCount-1] = line.split(" ")[0];
+                        letters[index] = line.strip();
+                        count = 0;
                     }
                     tCount ++;
+                    
                 }
                 else if (count == 1) //sample stuff
                 {
