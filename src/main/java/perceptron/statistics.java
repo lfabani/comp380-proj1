@@ -82,7 +82,7 @@ public class statistics {
                 System.out.println(tes);
             }
             p.printAccuracy();
-            
+        userIn.close();    
         }
 
         public static int[] read_file_dimensions(String filePath){
