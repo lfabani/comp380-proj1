@@ -8,6 +8,9 @@ import java.util.Scanner;
 public class readFile {
     public static void main(String[] args)
     {
+        /* 
+            * Main method to get user input and create and call our perceptron object
+         */
         Scanner userIn = new Scanner(System.in);
 
         System.out.println("Welcome to my first neural network - A Perceptron Net!");
@@ -135,6 +138,17 @@ public class readFile {
     }
 
     public static int[] read_file_dimensions(String filePath){
+        /*
+         * Function to read the dimensions of the samples
+         * 
+         * @param filePath The name of the file that we are reading
+         * 
+         * @return returnVals A list of integers containing the number of input neurons
+         *      the number of output neurons, 
+         *      the number of samples, 
+         *      the number of rows in each sample,
+         *      and the number of columns in each sample
+         */
         int[] returnVals = new int[5];
         try {
             // Create a Filereader object to read the file 
@@ -175,10 +189,14 @@ public class readFile {
     }
     public static float[] read_trained_thresholds_file(String filePath)
     {
-        /*@Returns: returns
-            * returns[0]  -> theta
-            * returns[1] -> alpha
-            * returns[2] -> weight threshold
+        /*
+         * This function reads the chosen theta, alpha, and weight threshold out of the output file
+         * 
+         * @param filePath The filename of the output file that we are reading from 
+         * 
+         * @return returns A list containing the chosen theta, 
+         *      the chosen alpha, 
+         *      and the chosen weight threshold
          */
         float[] returns = new float[3];
 
@@ -221,10 +239,7 @@ public class readFile {
                         returns[2] = Float.parseFloat(line);
                         
                     }
-                }
-                
-
-            
+                }            
             }
             // Close BufferedReader and FileReader
             br.close();
@@ -239,8 +254,13 @@ public class readFile {
     }
     public static float[] read_trained_Bweights_file(String filePath, int numWeights)
     {
-        /*@Returns: float[] biasWeights -> an array containing each bias (each index is bias for output neuron)
+        /*
+         * This function reads the trained bias weights out of the output file
          * 
+         * @param filePath The filename of the output file that we are reading from
+         * @param numWeights The number of bias weights that we are reading in
+         * 
+         * @return biasWeights An array containing each trained bias
          */
         
         float[] biasWeights = new float[numWeights];
@@ -288,10 +308,14 @@ public class readFile {
     }
     public static String[] read_trained_alias_file(String filePath, int numOutputNeurons)
     {
-        /*@Returns: float[] biasWeights -> an array containing each bias (each index is bias for output neuron)
+        /*
+         * This function reads the alias names from the output file
          * 
+         * @param filePath The name of the output file that we are reading from
+         * @param numOutputNeurons The number of aliases that we are reading
+         * 
+         * @return aliases An array containing each alias
          */
-        
         String[] aliases = new String[numOutputNeurons];
 
         try {
@@ -369,16 +393,14 @@ public class readFile {
                         {
                             weights[sampleCounter][weightIndex] = Float.parseFloat(weight);
                             weightIndex++;
-                        }
-                        
+                        }                        
                     }
                     sampleCounter ++;
                 }
                 else if (blankCount == 1) //we are at bias weights!
                 {
                     break;
-                }
-            
+                }           
             }
             // Close BufferedReader and FileReader
             br.close();
@@ -390,7 +412,6 @@ public class readFile {
             e.printStackTrace();
         }
         return weights;
-
     }
 
     public static void read_samples_file(String filePath, int[][] inputVals, int[][] tVals, int[] dimensionsSizes, String[] letters){
@@ -447,9 +468,7 @@ public class readFile {
                             {
                                 index = num;
                             }
-                        }
-
-                        
+                        }                        
                     }
                     else
                     {
