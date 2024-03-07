@@ -74,7 +74,6 @@ class perceptron{
 
                         }
                         float y = activationFunction(yIn);
-                        System.out.println(String.valueOf(this.t[sampleCounter][tee])+ " This is the tee\n"+ String.valueOf(y) + " This is Y");
                         if (Math.abs(y - this.t[sampleCounter][tee]) > this.weightThreshold) //add threshold here (isnt exact match or something)
                         {
                             updateWeights(tee, sample, sampleCounter);
