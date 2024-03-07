@@ -214,6 +214,9 @@ public class readFile {
     }
     public static float[] read_trained_Bweights_file(String filePath, int numWeights)
     {
+        /*@Returns: float[] biasWeights -> an array containing each bias (each index is bias for output neuron)
+         * 
+         */
         
         float[] biasWeights = new float[numWeights];
 
@@ -264,7 +267,10 @@ public class readFile {
     }
 
     public static float[][] read_trained_weights_file(String filePath, int numWeights, int numSamples){
-        
+        /*@Returns: float[][] biasWeights -> an array containing each weight 
+            * float[0] -> array of all weights for output neuron '0'
+                *each of the rows are weight array for that index output neuron
+         */
         float[][] weights = new float[numSamples][numWeights];
 
         try {
