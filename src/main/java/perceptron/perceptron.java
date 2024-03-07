@@ -134,9 +134,9 @@ class perceptron{
 
             //now we gotta write the theta, alpha, and weight Threshold
 
-            writer.write(String.valueOf(this.theta));
+            writer.write(String.valueOf(this.theta)+ "\n");
             writer.write("\n"); //add a gap to make it easy to differentiate!
-            writer.write(String.valueOf(this.alpha));
+            writer.write(String.valueOf(this.alpha) + "\n");
             writer.write("\n"); //add a gap to make it easy to differentiate!
             writer.write(String.valueOf(this.weightThreshold));
             // Close the writer
