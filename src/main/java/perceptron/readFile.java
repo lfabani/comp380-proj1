@@ -362,9 +362,14 @@ public class readFile {
     }
 
     public static float[][] read_trained_weights_file(String filePath, int numWeights, int numOutputNeurons){
-        /*@Returns: float[][] Weights -> an array containing each weight 
-            * float[0] -> array of all weights for output neuron '0'
-                *each of the rows are weight array for that index output neuron
+        /*
+         * This function reads the trained weights out of the training output file
+         * 
+         * @param filePath The name of the output file that we are reading from
+         * @param numWeights The number of weights per sample
+         * @param numOutputNeurons The number of sets of weights that were generated, one for each output neuron
+         * 
+         * @returns weights An array containing an array of weights for each output neuron
          */
         float[][] weights = new float[numOutputNeurons][numWeights];
 
@@ -416,6 +421,15 @@ public class readFile {
     }
 
     public static void read_samples_file(String filePath, int[][] inputVals, int[][] tVals, int[] dimensionsSizes, String[] letters){
+        /*
+         * This function reads in our file of training or testing samples
+         * 
+         * @param filePath The file to read from
+         * @param inputVals An array contating arrays of the values of each of the input vectors (1 or -1) for each sample
+         * @param tVals An array containg arrays of the expected values of the output neurons for each sample
+         * @param dimensionsSizes An array containing the dimensions of how the set of weights is split between lines into a matrix
+         * @param letters An array containing the alias that is connected to each output neuron when it is "on"
+         */
         int[] dimensions = new int[3];
         try {
             // Create a FileReader object to read the file
@@ -438,7 +452,7 @@ public class readFile {
             //to return training pairs
             dimensions[2] = Integer.parseInt(bufferedReader.readLine().strip());
 
-            String[][] indivSample = new String[dimensionsSizes[3]][dimensionsSizes[4]];  //TODO: change hard coded values
+            String[][] indivSample = new String[dimensionsSizes[3]][dimensionsSizes[4]]; 
 
             
             int sampleCount = 0;
@@ -510,6 +524,14 @@ public class readFile {
 
     public static int[] convertStringListInt (String[] strList, int numColumns)
     {
+        /*
+         * This function converts a list of Strings to a list of integers
+         * 
+         * @param strList The list of strings to convert
+         * @param numColumns The number of items in the list to convert
+         * 
+         * @return intList The list of integers after conversion
+         */
         int[] intList = new int[numColumns];  
         int i = 0;
         for (String bruh : strList)
@@ -525,6 +547,13 @@ public class readFile {
 
     public static int[] convertTo1D(String[][] array2D)
     {
+        /*
+         * This functions converts a matrix of String weights to a single array of integer weights
+         * 
+         * @param array2D The matrix of Strings to be converted to a single array of integers
+         * 
+         * @return resultsArray The one dimensional array of integers after conversion
+         */
         int rows = array2D.length;
         int cols = array2D[0].length;
 
