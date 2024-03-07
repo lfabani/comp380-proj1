@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import javax.swing.*;
@@ -7,76 +9,21 @@ import java.awt.*;
 import java.util.List;
 
 public class statistics {
-       // Embedding PointGrapher as an inner class
-    private static class PointGrapher extends JPanel {
-        private static class PointF {
-            private float x;
-            private float y;
     
-            public PointF(float x, float y) {
-                this.x = x;
-                this.y = y;
-            }
-    
-            public float getX() {
-                return x;
-            }
-    
-            public float getY() {
-                return y;
-            }
-        }
-        private List<PointF> points;
-        private static final int WIDTH = 400;
-        private static final int HEIGHT = 400;
-        private static final int MARGIN = 20;
-        public PointGrapher() {
-            points = new ArrayList<>();
-        }
-
-        public void addPoint(float x, float y) {
-            points.add(new PointF(x, y));
-            
-        }
-        public void paintIt()
-        {
-            repaint(); // Request the panel to be repainted
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D) g;
-
-            // Set rendering hints for smoother graphics
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            // Define the scales and margins as float
-            float xMargin = MARGIN; // Left margin
-            float yMargin = getHeight() - MARGIN; // Bottom margin
-            float xScale = (getWidth() - 2 * MARGIN) / (points.size() - 1); // Calculate x scale
-            float yScale = (getHeight() - 2 * MARGIN) / (points.size() - 1); // Calculate y scale
-
-            // Plot points
-            for (PointF point : points) {
-                int x = Math.round(xMargin + point.x * xScale);
-                int y = Math.round(yMargin - point.y * yScale);
-                g.fillOval(x - 2, y - 2, 4, 4); // Draw a small circle for each point
-            }
-            // Draw each point
-           
-        }
-    }
-
     public static void main(String[] args) {
         
         Scanner userIn = new Scanner(System.in);
         String filePath;
+
+        String trainFile;
+        System.out.println("Enter the name of the file to train on: ");
+        trainFile = userIn.nextLine();
         System.out.println("Enter the name of the file to classify: ");
         filePath = userIn.nextLine();
 
         System.out.println("Enter the name of the trained weight settings data file: ");
             
-        String weightsFile = userIn.next();
+        
             
             
         int[] dimensions = read_file_dimensions(filePath);
@@ -85,23 +32,115 @@ public class statistics {
         int[][] t = new int[dimensions[2]][dimensions[1]];
         read_samples_file(filePath, samples, t, dimensions,letters);
 
-        JFrame frame = new JFrame("Multiple Graphs");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(2, 2)); // Set grid layout for multiple graphs
-        frame.setSize(800, 600);
 
-        PointGrapher grapher = new PointGrapher();
+        int[] tDimensions = read_file_dimensions(trainFile);
+        String[] tLetters = new String[tDimensions[1]];
+        int[][] tSamples = new int[tDimensions[2]][tDimensions[0]];
+        int[][] tT = new int[tDimensions[2]][tDimensions[1]];
+        
 
-        for (float theta = 0; theta < 1; theta += 0.05)
+        System.out.println("Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: ");
+        int weightSelection = Integer.valueOf(userIn.nextLine());
+
+        for (float theta = 0; theta <= 1; theta += 0.05)  //train with dynamic thetas!
         {
-            run(weightsFile, dimensions, letters, samples, t, grapher, theta, 1);
+            String resultsFilename = "dataForStats/weights/theta/theta"+String.valueOf(theta)+".txt";
+            String weightsFile = train(resultsFilename,trainFile, tSamples, tT, weightSelection, theta, 1f);
+            String csvFile = "dataForStats/CSVS/DynamicTheta.csv";
+            
+            run(csvFile, weightsFile, dimensions, letters, samples, t, theta, 1);
         }
-        grapher.paintIt();
+
+        for (float alpha = 0.05f; alpha <= 1; alpha += 0.05) //dynamic alpha
+        {
+            String resultsFilename = "dataForStats/weights/alpha/alpha"+String.valueOf(alpha)+".txt";
+            String weightsFile = train(resultsFilename, trainFile, tSamples, tT, weightSelection, 0, alpha);
+
+            String csvFile = "dataForStats/CSVS/DynamicAlpha.csv";
+            
+            run(csvFile, weightsFile, dimensions, letters, samples, t, 0, alpha);
+        }
+
+        for (float theta = 0; theta <= 1; theta += 0.5)
+        {
+            for (float alpha = 0.05f; alpha <= 1; alpha += 0.05) //dynamic alpha and theta!
+        {
+            String resultsFilename = "dataForStats/weights/alphaTheta/alpha"+String.valueOf(alpha)+"theta"+String.valueOf(theta)+".txt";
+            String weightsFile = train(resultsFilename, trainFile, tSamples, tT, weightSelection, theta, alpha);
+
+            String csvFile = "dataForStats/CSVS/DynamicAlphaAndTheta.csv";
+            
+            run(csvFile, weightsFile, dimensions, letters, samples, t, theta, alpha);
+        }
+        }
+
+
+        
         userIn.close(); 
 
     }
+
+    public static String train(String resultsFilename, String filePath, int[][] samples, int [][] t, int weightSelection,float theta,float alpha)
+    {
+        int[] dimensions = read_file_dimensions(filePath);
+        samples = new int[dimensions[2]][dimensions[0]];
+        t = new int[dimensions[2]][dimensions[1]];
+        String[] letters = new String[dimensions[1]];
+        read_samples_file(filePath, samples, t, dimensions, letters);
+
+                
+        float [][] weights = new float[dimensions[1]][dimensions[0]];
+        float [] bweights = new float [dimensions[1]];
+        if (weightSelection == 0){
+                    //initials weights
+            for (int i = 0; i < dimensions[1]; i++)
+            {
+                for (int j = 0; j < dimensions[0]; j++)
+                {
+                    weights[i][j] = 0;
+                }
+            }
+                    //initialize bias weights
+            for (int i = 0; i < dimensions[1]; i++)
+                {
+                    bweights[i] = 0;
+                }
+        }
+        else { 
+                    //initials weights
+            Random random = new Random();
+            for (int i = 0; i < dimensions[1]; i++)
+            {
+                for (int j = 0; j < dimensions[0]; j++)
+                {
+                    weights[i][j] = (random.nextFloat()-0.5f);
+                }
+            }
+                    //initialize bias weights
+            for (int i = 0; i < dimensions[1]; i++)
+                {
+                    bweights[i] = (random.nextFloat()-0.5f);
+                }
+        }
+
+                
+        int maxEpoch = 100;
+
+                
+        
+
+                
+                
+        float weightThreshold = 0.001f;
+
+        perceptron p = new perceptron(weights, bweights, alpha, theta, samples, t, maxEpoch, weightThreshold, letters);
+                
+        p.train();
+        p.create_results_file(resultsFilename);
+        return resultsFilename;
+    }
         //graph theta changing
-    public static void run(String weightsFile,int[] dimensions, String[] letters, int[][] samples, int[][] t,PointGrapher grapher, float theta, float alpha)
+    public static void run(String csvFile, String weightsFile,int[] dimensions, String[] letters, int[][] samples, int[][] t, float theta, float alpha)
     {
             letters = read_trained_alias_file(weightsFile, dimensions[1]);
         
@@ -116,12 +155,19 @@ public class statistics {
 
             perceptron p = new perceptron(weights, bWeights, alpha, theta, samples, t, 100, weightThresh,letters);
             int[][] results = p.run();
-            String[] test = p.test(results);
-            System.out.println("trained");
+            p.test(results);
+            
             
             p.printAccuracy();
             float accuracy = p.getAccuracy();
-            grapher.addPoint(theta,accuracy);
+            
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile, true));
+                writer.write(theta + "," + accuracy + "," + alpha + "\n");
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
            
         }
 
