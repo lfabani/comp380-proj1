@@ -318,15 +318,19 @@ class perceptron{
          * 
          * @param yIn The computed yIn value
          * 
-         * @return 1 or -1 The acviated y value
+         * @return 1, 0, or -1 The acviated y value
          */
-        if (yIn < this.theta)
+        if (yIn > this.theta)
         {
-            return -1;
+            return 1;
+        }
+        else if (yIn < -this.theta)
+        {
+             return -1;
         }
         else
         {
-            return 1;
+            return 0;
         }
         
     }
