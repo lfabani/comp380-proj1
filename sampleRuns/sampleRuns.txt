@@ -1,0 +1,376 @@
+Script started on 2024-03-07 18:35:44-08:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="139" LINES="14"]
+[?2004hptuft@bec315dl02:~/Desktop/comp380-proj1/src/main/java/perceptron$ java readFile
+[?2004l
+Welcome to my first neural network - A Perceptron Net!
+Enter 1 to train using a training data file
+Enter 2 to use a trained weight settings data file
+Enter any other number to quit 
+1
+Enter the training data file path: 
+Training Data.txt
+Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: 
+1
+Enter the max number of training Epochs: 
+100
+Enter a file name to save the trained weight settings: 
+sampleWeights
+Enter the learning rate alpha from 0 to 1 but not including 0: 
+0.5
+Enter the threshold theta: 
+1.0
+Enter the threshold to be used for measuring weight changes: 
+0.00001
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+4 epochs
+
+File created: sampleWeights
+[?2004hptuft@bec315dl02:~/Desktop/comp380-proj1/src/main/java/perceptron$ java readFile
+[?2004l
+Welcome to my first neural network - A Perceptron Net!
+Enter 1 to train using a training data file
+Enter 2 to use a trained weight settings data file
+Enter any other number to quit 
+2
+Enter the name of the file to classify: 
+Testing_data.txt
+Enter the name of the trained weight settings data file: 
+sampleWeights
+trained
+Expected Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Predicted Value: 1 -1 1 -1 -1 1 -1  AKA: A
+Match: true
+Expected Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Predicted Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Match: true
+Expected Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Predicted Value: -1 -1 1 -1 1 -1 -1  AKA: C
+Match: true
+Expected Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Predicted Value: -1 -1 -1 -1 -1 -1 -1  AKA: null
+Match: false
+Expected Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Predicted Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Match: true
+Expected Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Predicted Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Match: true
+Expected Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Predicted Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Match: true
+Expected Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Predicted Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Match: true
+Expected Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Predicted Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Match: true
+Expected Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Predicted Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Match: true
+Expected Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Predicted Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Match: true
+Expected Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Predicted Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Match: true
+Expected Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Predicted Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Match: true
+Expected Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Predicted Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Match: true
+Expected Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Predicted Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Match: true
+Expected Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Predicted Value: -1 1 -1 1 -1 -1 -1  AKA: B
+Match: true
+Expected Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Predicted Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Match: true
+Expected Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Predicted Value: -1 -1 -1 -1 -1 -1 -1  AKA: null
+Match: false
+Expected Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Predicted Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Match: true
+Expected Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Predicted Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Match: true
+Expected Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Predicted Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Match: true
+The accuracy of the model is: 0.95
+[?2004hptuft@bec315dl02:~/Desktop/comp380-proj1/src/main/java/perceptron$ java readFile
+[?2004l
+Welcome to my first neural network - A Perceptron Net!
+Enter 1 to train using a training data file
+Enter 2 to use a trained weight settings data file
+Enter any other number to quit 
+1
+Enter the training data file path: 
+Training Data.txrt  t
+Enter 0 to initialize weights to 0, enter 1 to initialize weights to random values between -0.5 and 0.5: 
+0
+Enter the max number of training Epochs: 
+100
+Enter a file name to save the trained weight settings: 
+sampleWeights2
+Enter the learning rate alpha from 0 to 1 but not including 0: 
+0.2 02  2
+Enter the threshold theta: 
+0.5
+Enter the threshold to be used for measuring weight changes: 
+0.001
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+updateWeights called
+
+5 epochs
+
+File created: sampleWeights2
+[?2004hptuft@bec315dl02:~/Desktop/comp380-proj1/src/main/java/perceptron$ java readFile
+[?2004l
+Welcome to my first neural network - A Perceptron Net!
+Enter 1 to train using a training data file
+Enter 2 to use a trained weight settings data file
+Enter any other number to quit 
+2
+Enter the name of the file to classify: 
+Testing_dat.t  a.txt
+Enter the name of the trained weight settings data file: 
+sampleWeights2
+trained
+Expected Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Predicted Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Match: true
+Expected Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Predicted Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Match: true
+Expected Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Predicted Value: -1 -1 1 -1 1 -1 -1  AKA: C
+Match: true
+Expected Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Predicted Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Match: true
+Expected Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Predicted Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Match: true
+Expected Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Predicted Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Match: true
+Expected Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Predicted Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Match: true
+Expected Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Predicted Value: -1 -1 -1 -1 -1 -1 -1  AKA: null
+Match: false
+Expected Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Predicted Value: -1 -1 -1 -1 -1 -1 -1  AKA: null
+Match: false
+Expected Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Predicted Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Match: true
+Expected Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Predicted Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Match: true
+Expected Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Predicted Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Match: true
+Expected Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Predicted Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Match: true
+Expected Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Predicted Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Match: true
+Expected Value: 1 -1 -1 -1 -1 -1 -1  AKA: A
+Predicted Value: -1 -1 -1 -1 -1 -1 -1  AKA: null
+Match: false
+Expected Value: -1 1 -1 -1 -1 -1 -1  AKA: B
+Predicted Value: -1 1 -1 -1 1 -1 -1  AKA: B
+Match: true
+Expected Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Predicted Value: -1 -1 1 -1 -1 -1 -1  AKA: C
+Match: true
+Expected Value: -1 -1 -1 1 -1 -1 -1  AKA: D
+Predicted Value: -1 -1 -1 -1 -1 -1 -1  AKA: null
+Match: false
+Expected Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Predicted Value: -1 -1 -1 -1 1 -1 -1  AKA: E
+Match: true
+Expected Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Predicted Value: -1 -1 -1 -1 -1 1 -1  AKA: J
+Match: true
+Expected Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Predicted Value: -1 -1 -1 -1 -1 -1 1  AKA: K
+Match: true
+The accuracy of the model is: 0.85
+[?2004hptuft@bec315dl02:~/Desktop/comp380-proj1/src/main/java/perceptron$ exit
+[?2004l
+exit
+
+Script done on 2024-03-07 18:39:25-08:00 [COMMAND_EXIT_CODE="2"]
